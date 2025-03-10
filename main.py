@@ -89,5 +89,5 @@ def get_comic(index):
     return jsonify({"image": image_path, "dialogues": dialogues})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=6005)
+    app.run(debug=True, port=4000)
 
