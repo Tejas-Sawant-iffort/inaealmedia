@@ -23,12 +23,14 @@
             position: relative;
             background: rgb(215, 214, 214);
             border-radius: 20px;
-            padding: 20px;
+            padding: 5%;
             width: 90%;
+             
             max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .comic-image {
@@ -39,54 +41,118 @@
         }
 
         .nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 15px 20px;
+            padding: 10px;
             font-size: 18px;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 50px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-button:hover {
+            background-color: #444;
         }
 
         .prev-button {
-            left: -60px;
-            background-color: #540e0e;
+            background-color: #141e2e;
         }
 
         .next-button {
-            right: -60px;
             background-color: #141e2e;
         }
 
         .progress-container {
-            width: 100px;
-            height: 100px;
-            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
             margin-top: 15px;
         }
 
+        .play-pause-button {
+            position: relative;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        .play-pause-button:hover {
+            background-color: #0056b3;
+        }
+
         .progress-circle {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 70px;
+            height: 70px;
             stroke: #007BFF;
             stroke-width: 8;
             fill: none;
             transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .nav-button {
+                padding: 8px;
+                font-size: 16px;
+            }
+
+            .comic-box {
+                padding: 3%;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="comic-box">
-    <button class="nav-button prev-button" onclick="prevComic()"><</button>
+    <h1>Interactive Comic Reader </h1>
     <img id="comic-image" class="comic-image" src="" alt="Comic">
-    <button class="nav-button next-button" onclick="nextComic()">></button>
-    
+
     <div class="progress-container">
-        <svg width="100" height="100" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="40" stroke="#ddd" stroke-width="8" fill="none" />
-            <circle id="progress" class="progress-circle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
-        </svg>
+        <button class="nav-button prev-button" onclick="prevComic()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+            </svg>
+        </button>
+        <button id="play-pause-button" class="play-pause-button" onclick="togglePlayPause()">
+            <svg id="play-pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5.14v14l11-7-11-7z"></path>
+            </svg>
+            <svg class="progress-circle" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" stroke="#ddd" stroke-width="10" fill="none" />
+                <circle id="progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283" />
+            </svg>
+        </button>
+        <button class="nav-button next-button" onclick="nextComic()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="instructions">
+        <span>Press Space to Play/Pause, Arrow Keys to Navigate</span>
     </div>
 </div>
 
@@ -94,7 +160,8 @@
     let currentIndex = 0;
     let audioQueue = [];
     let currentAudio = null;
-    let progressCircle;
+    let isPlaying = false;
+    let animationFrameId;
 
     async function loadComic(index) {
         try {
@@ -129,10 +196,13 @@
                 let startTime = Date.now();
 
                 function update() {
+                    if (!isPlaying) return;
                     let elapsed = (Date.now() - startTime) / 1000;
-                    let progress = (elapsed / duration) * 251.2;
+                    let progress = (elapsed / duration) * 283;
                     updateProgress(progress);
-                    if (elapsed < duration) requestAnimationFrame(update);
+                    if (elapsed < duration) {
+                        animationFrameId = requestAnimationFrame(update);
+                    }
                 }
                 update();
             };
@@ -143,7 +213,7 @@
                     playNext();
                 }, 1000);
             };
-            
+
             currentAudio.play();
         }
         playNext();
@@ -155,11 +225,31 @@
             currentAudio.currentTime = 0;
             currentAudio = null;
         }
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+        }
     }
 
     function updateProgress(value) {
-        progressCircle = document.getElementById("progress");
-        progressCircle.setAttribute("stroke-dashoffset", 251.2 - value);
+        const progressCircle = document.getElementById("progress");
+        if (progressCircle) {
+            progressCircle.setAttribute("stroke-dashoffset", 283 - value);
+        }
+    }
+
+    function togglePlayPause() {
+        if (isPlaying) {
+            stopAudio();
+            document.getElementById("play-pause-icon").innerHTML = `
+                <path d="M8 5.14v14l11-7-11-7z"></path>
+            `;
+        } else {
+            playAudioQueue();
+            document.getElementById("play-pause-icon").innerHTML = `
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+            `;
+        }
+        isPlaying = !isPlaying;
     }
 
     function nextComic() {
@@ -175,8 +265,7 @@
     document.addEventListener("keydown", function(event) {
         if (event.key === " ") {
             event.preventDefault();
-            stopAudio();
-            playAudioQueue();
+            togglePlayPause();
         } else if (event.key === "ArrowRight") {
             nextComic();
         } else if (event.key === "ArrowLeft") {
