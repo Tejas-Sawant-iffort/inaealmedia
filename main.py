@@ -1,41 +1,4 @@
-# from flask import Flask, render_template, jsonify
-# import json
-# import os
-
-# app = Flask(__name__)
-
-# # Load comic data
-# with open("static/comics.json", "r") as f:
-#     comics = json.load(f)
-
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
-
-# @app.route("/get_comic/<int:index>")
-# def get_comic(index):
-#     if index < 0 or index >= len(comics):
-#         return jsonify({"error": "Invalid comic index"}), 404
-
-#     comic = comics[index]
-
-#     # Load timestamps if available
-#     timestamps_file = f"static/audio/{comic['audio'].replace('.mp3', '.json')}"
-#     timestamps = []
-#     if os.path.exists(timestamps_file):
-#         with open(timestamps_file) as f:
-#             timestamps = json.load(f)
-
-#     return jsonify({
-#         "image": f"static/comics/{comic['image']}",
-#         "audio": f"static/audio/{comic['audio']}",
-#         "timestamps": timestamps
-#     })
-
-# if __name__ == "__main__":
-#     app.run(debug=True, port=6005)
-
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import json
 import os
 
@@ -55,27 +18,39 @@ def index():
 
 @app.route("/get_comic/<int:index>")
 def get_comic(index):
+    # Get the selected language from query parameters (default to English if not provided)
+    lang = request.args.get("lang", "en")  # Default language is 'en' (English)
+
     comics = load_comics()  # Reload comics each time to reflect updates
     if index < 0 or index >= len(comics):
         return jsonify({"error": "Invalid comic index"}), 404
 
     comic = comics[index]
 
-    # Extract the main image
-    image_path = f"static/comics/{comic['image']}"
+    # Extract the main image based on the selected language
+    image_path = f"static/comics/{comic['image'][lang]}"
 
     # Collect all text-audio pairs dynamically (p1, p2, or direct text/audio fields)
     dialogues = []
     if "p1" in comic:
         for item in comic["p1"]:
-            dialogues.append({"text": item["text"], "audio": f"static/audio/{item['audio']}"})
+            dialogues.append({
+                "text": item["text"][lang],
+                "audio": f"static/audio/{item['audio'][lang]}"
+            })
     
     if "p2" in comic:
         for item in comic["p2"]:
-            dialogues.append({"text": item["text"], "audio": f"static/audio/{item['audio']}"})
+            dialogues.append({
+                "text": item["text"][lang],
+                "audio": f"static/audio/{item['audio'][lang]}"
+            })
 
     if "text" in comic and "audio" in comic:
-        dialogues.append({"text": comic["text"], "audio": f"static/audio/{comic['audio']}"})
+        dialogues.append({
+            "text": comic["text"][lang],
+            "audio": f"static/audio/{comic['audio'][lang]}"
+        })
 
     # Load timestamps for each audio file
     for dialogue in dialogues:
@@ -89,4 +64,4 @@ def get_comic(index):
     return jsonify({"image": image_path, "dialogues": dialogues})
 
 if __name__ == "__main__":
-    app.run(debug=True,host="0.0.0.0",port=4000)
+    app.run(debug=True, host="0.0.0.0", port=4000)

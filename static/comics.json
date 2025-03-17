@@ -1,39 +1,94 @@
 [
     {
-        "image": "1.jpg",
-        "p1":[
-           { "text": "In the heart of the Arab world, a transformation is taking place - One that will change the future of literacy forever",
-            "audio": "1.mp3"}
+        "image": {
+            "en": "1_en.jpg",
+            "ar": "1_ar.jpg"
+        },
+        "p1": [
+            {
+                "text": {
+                    "en": "In the heart of the Arab world, a transformation is taking place - One that will change the future of literacy forever",
+                    "ar": "في قلب العالم العربي، تجري تحولات ستحدث تغييرًا جذريًا في مستقبل القراءة للأبد"
+                },
+                "audio": {
+                    "en": "1_en.mp3",
+                    "ar": "1_ar.mp3"
+                }
+            }
         ]
-      
     },
     {
-        "image": "2.jpg",
-        "p1":[
-            { "text": "Sami is discovering stories in a way never before.",
-             "audio": "2.mp3"}
-         ],
-         "p2":[
-             { "text": "Sami",
-              "audio": "21.mp3"}
-          ]
+        "image": {
+            "en": "2_en.jpg",
+            "ar": "2_ar.jpg"
+        },
+        "p1": [
+            {
+                "text": {
+                    "en": "Sami is discovering stories in a way never before.",
+                    "ar": "سامي يكتشف القصص بطريقة لم يسبق لها مثيل."
+                },
+                "audio": {
+                    "en": "2_en.mp3",
+                    "ar": "2_ar.mp3"
+                }
+            }
+        ],
+        "p2": [
+            {
+                "text": {
+                    "en": "Sami",
+                    "ar": "سامي"
+                },
+                "audio": {
+                    "en": "21_en.mp3",
+                    "ar": "21_ar.mp3"
+                }
+            }
+        ]
     },
     {
-        "image": "3.jpg",
-        "text": "Sami is discovering stories in a way never before.",
-        "audio": "3.mp3"
+        "image": {
+            "en": "3_en.jpg",
+            "ar": "3_ar.jpg"
+        },
+        "text": {
+            "en": "Sami is discovering stories in a way never before.",
+            "ar": "سامي يكتشف القصص بطريقة لم يسبق لها مثال."
+        },
+        "audio": {
+            "en": "3_en.mp3",
+            "ar": "3_ar.mp3"
+        }
     },
     {
-        "image": "4.jpg",
-        "p1":[
-            { "text": "what are you watching sami?",
-             "audio": "4.mp3"}
-         ],
-         "p2":[
-             { "text": "Sami",
-              "audio": "41.mp3"}
-          ]
-        
+        "image": {
+            "en": "4_en.jpg",
+            "ar": "4_ar.jpg"
+        },
+        "p1": [
+            {
+                "text": {
+                    "en": "What are you watching, Sami?",
+                    "ar": "ماذا تشاهد يا سامي؟"
+                },
+                "audio": {
+                    "en": "4_en.mp3",
+                    "ar": "4_ar.mp3"
+                }
+            }
+        ],
+        "p2": [
+            {
+                "text": {
+                    "en": "Sami",
+                    "ar": "سامي"
+                },
+                "audio": {
+                    "en": "41_en.mp3",
+                    "ar": "41_ar.mp3"
+                }
+            }
+        ]
     }
-
 ]
