@@ -1,0 +1,57 @@
+[
+    {
+        "word": " Sammy",
+        "start": 0.0,
+        "end": 0.42
+    },
+    {
+        "word": " is",
+        "start": 0.42,
+        "end": 0.62
+    },
+    {
+        "word": " discovering",
+        "start": 0.62,
+        "end": 1.06
+    },
+    {
+        "word": " stories",
+        "start": 1.06,
+        "end": 1.62
+    },
+    {
+        "word": " in",
+        "start": 1.62,
+        "end": 1.84
+    },
+    {
+        "word": " a",
+        "start": 1.84,
+        "end": 1.94
+    },
+    {
+        "word": " way",
+        "start": 1.94,
+        "end": 2.18
+    },
+    {
+        "word": " he",
+        "start": 2.18,
+        "end": 2.42
+    },
+    {
+        "word": " never",
+        "start": 2.42,
+        "end": 2.7
+    },
+    {
+        "word": " has",
+        "start": 2.7,
+        "end": 3.0
+    },
+    {
+        "word": " before.",
+        "start": 3.0,
+        "end": 3.52
+    }
+]

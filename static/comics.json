@@ -7,8 +7,8 @@
         "p1": [
             {
                 "text": {
-                    "en": "In the heart of the Arab world, a transformation is taking place - One that will change the future of literacy forever",
-                    "ar": "في قلب العالم العربي، تجري تحولات ستحدث تغييرًا جذريًا في مستقبل القراءة للأبد"
+                    "en": "In the heart of the Arab World, A transformation is taking place – one that will change the future of literacy forever.",
+                    "ar": "في قلب العالم العربي، يجري تحول سيغير مستقبل محو الأمية إلى الأبد."
                 },
                 "audio": {
                     "en": "1_en.mp3",
@@ -25,8 +25,8 @@
         "p1": [
             {
                 "text": {
-                    "en": "Sami is discovering stories in a way never before.",
-                    "ar": "سامي يكتشف القصص بطريقة لم يسبق لها مثيل."
+                    "en": "Sami is discovering stories in a way he never has before...",
+                    "ar": "سامي يكتشف القصص بطريقة لم يعهدها من قبل..."
                 },
                 "audio": {
                     "en": "2_en.mp3",
@@ -37,8 +37,8 @@
         "p2": [
             {
                 "text": {
-                    "en": "Sami",
-                    "ar": "سامي"
+                    "en": "Huh! Abu Zayd is too clever!",
+                    "ar": "هاهاها! أبو زيد ذكي جدًا!"
                 },
                 "audio": {
                     "en": "21_en.mp3",
@@ -53,8 +53,8 @@
             "ar": "3_ar.jpg"
         },
         "text": {
-            "en": "Sami is discovering stories in a way never before.",
-            "ar": "سامي يكتشف القصص بطريقة لم يسبق لها مثال."
+            "en": "With the power of engaging comic adaptations, Arabic is now accessible to young minds.",
+            "ar": " بفضل قوة الاقتباسات المصورة المشوقة، أصبحت اللغة العربية في متناول عقول الشباب."
         },
         "audio": {
             "en": "3_en.mp3",
@@ -81,8 +81,8 @@
         "p2": [
             {
                 "text": {
-                    "en": "Sami",
-                    "ar": "سامي"
+                    "en": "I’m reading, Mama. Look how awesome this art is?",
+                    "ar": "أنا أقرأ يا أمي. انظري كم هذا الفن رائع؟"
                 },
                 "audio": {
                     "en": "41_en.mp3",

@@ -1,0 +1,27 @@
+[
+    {
+        "word": " What",
+        "start": 0.0,
+        "end": 0.22
+    },
+    {
+        "word": " are",
+        "start": 0.22,
+        "end": 0.32
+    },
+    {
+        "word": " you",
+        "start": 0.32,
+        "end": 0.44
+    },
+    {
+        "word": " watching,",
+        "start": 0.44,
+        "end": 0.78
+    },
+    {
+        "word": " Sammy?",
+        "start": 0.96,
+        "end": 1.18
+    }
+]

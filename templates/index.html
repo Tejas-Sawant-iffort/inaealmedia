@@ -10,7 +10,7 @@
             text-align: center;
             background-color: rgb(199, 196, 196);
             color: #333;
-            margin:auto;
+            margin: auto;
             padding: 10px;
             align-items: center;
             justify-content: center;
@@ -20,7 +20,7 @@
             position: relative;
             background: rgb(215, 214, 214);
             border-radius: 20px;
-            padding: 30px 20px; /* Increased padding for better spacing */
+            padding: 30px 20px;
             width: 90%;
             max-width: 500px;
             display: flex;
@@ -29,7 +29,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: auto;
         }
-       
         .nav-button {
             padding: 10px;
             font-size: 18px;
@@ -81,7 +80,6 @@
             background-color: #ddd;
             border-radius: 5px;
             overflow: hidden;
-            
         }
         .page-progress {
             height: 10px;
@@ -104,18 +102,15 @@
             fill: none;
             transition: stroke-dashoffset 0.1s linear;
         }
-
         .instructions {
             margin-top: 10px;
             font-size: 14px;
             color: #555;
         }
-        /* Language Selector Styling */
         .language-selector-container {
             display: flex;
             align-items: center;
             justify-content: center;
-       
         }
         label {
             font-size: 12px;
@@ -134,9 +129,9 @@
             cursor: pointer;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             outline: none;
-            appearance: none; /* Remove default arrow in some browsers */
-            -webkit-appearance: none; /* For Safari */
-            -moz-appearance: none; /* For Firefox */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 12px;
@@ -154,55 +149,45 @@
                 font-size: 16px;
             }
             .comic-box {
-                padding: 20px 15px; /* Adjusted padding for smaller screens */
+                padding: 20px 15px;
             }
             body {
                 padding: 10px;
             }
         }
-
-
-        /* Comic Container */
-.comic-div {
-    position: relative;
-    width: 90%;
-    max-width: 500px; /* Adjust based on your design */
-    margin: 20px auto; /* Center-align and add spacing */
-    border-radius: 15px; /* Rounded corners for the container */
-    overflow: hidden; /* Ensure no overflow from the image */
-   
-}
-
-/* Comic Image */
-.comic-image {
-    max-width: 100%; /* Ensure the image scales properly */
-    height: 100%; /* Maintain aspect ratio */
-    display: block; /* Remove any extra space below the image */
-    border-radius: 15px; /* Match the container's rounded corners */
-    transition: transform 0.3s ease; /* Smooth hover effect */
-}
-
-/* Hover Effect for Comic Image */
-.comic-image:hover {
-    transform: scale(1.01); /* Slightly zoom in on hover */
-}
+        .comic-div {
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .comic-image {
+            max-width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        .comic-image:hover {
+            transform: scale(1.01);
+        }
     </style>
 </head>
 <body>
 <div class="comic-box">
-<h1 style="margin:5px">Comic Reader </h1>
-    <div class="language-selector-container" style="margin:0"> 
+    <h1 style="margin:5px">Comic Reader</h1>
+    <div class="language-selector-container" style="margin:0">
         <label for="language">Select Language:</label>
         <select id="language" onchange="reloadComic()">
             <option value="en">English</option>
             <option value="ar">Arabic</option>
         </select>
     </div>
-   <!-- Language Selector -->
-   
-
-    <div class="comic-div" style="margin:0">
-        <img id="comic-image" class="comic-image" src="static/comics/1_en.jpg" alt="Comic">
+    <div class="comic-div" style="margin:0; position:relative;">
+        <img id="comic-image" class="comic-image" alt="Comic">
+        <div id="dialogue-overlay" style="position:absolute; bottom:10%; left:0; width:100%; text-align:center; color:white; font-size:14px; font-weight:bold; text-shadow: 0 0 5px rgba(0,0,0,0.7); pointer-events:none;"></div>
         <div class="page-progress-bar">
             <div id="page-progress" class="page-progress"></div>
         </div>
@@ -210,7 +195,6 @@
             Page <span id="current-page">1</span> of <span id="total-pages">4</span>
         </div>
     </div>
-
     <div class="progress-container">
         <button class="nav-button prev-button" onclick="prevComic()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
@@ -241,51 +225,97 @@
     let audioQueue = [];
     let currentAudio = null;
     let isPlaying = false;
-    let animationFrameId;
-    let totalPages = 4; // Update this based on the total number of pages
+    let animationFrameId = null;
+    let totalPages = 0;
+    let currentDialogueIndex = 0; // Track the current dialogue in the queue
+
+    async function fetchTotalPages() {
+        const response = await fetch("/get_comic_count");
+        const data = await response.json();
+        totalPages = data.count;
+        document.getElementById("total-pages").textContent = totalPages;
+    }
 
     async function loadComic(index) {
-        const lang = document.getElementById("language").value; // Get selected language
+        const lang = document.getElementById("language").value;
         try {
             const response = await fetch(`/get_comic/${index}?lang=${lang}`);
-            if (!response.ok) return;
+            if (!response.ok) {
+                alert("Couldn’t load comic page!");
+                return;
+            }
             const comic = await response.json();
             document.getElementById("comic-image").src = comic.image;
-            audioQueue = comic.dialogues.map(dialogue => dialogue.audio);
+            audioQueue = comic.dialogues.map(dialogue => ({
+                audio: dialogue.audio,
+                text: dialogue.text,
+                timestamps: dialogue.timestamps || []
+            }));
             currentIndex = index;
+            currentDialogueIndex = 0; // Reset to first dialogue when loading new comic
             stopAudio();
             updatePageProgress(index);
         } catch (error) {
             console.error("Error loading comic:", error);
+            alert("Something went wrong!");
         }
     }
 
     function reloadComic() {
-        // Reload the comic with the new language
         loadComic(currentIndex);
     }
 
     function playAudioQueue() {
-        if (audioQueue.length === 0) return;
-        let index = 0;
+        if (audioQueue.length === 0 || currentDialogueIndex >= audioQueue.length) return;
 
-        function playNext() {
-            if (index >= audioQueue.length) return;
-            stopAudio();
-            currentAudio = new Audio(audioQueue[index]);
-            updateProgress(0);
+        const dialogue = audioQueue[currentDialogueIndex];
+        
+        // If no audio is loaded or it's a new dialogue, create a new Audio object
+        if (!currentAudio || currentAudio.src !== dialogue.audio) {
+            stopAudio(); // Ensure any previous audio is stopped
+            currentAudio = new Audio(dialogue.audio);
+            
+            // Split text into words and create spans
+            const words = dialogue.text.split(" ");
+            const overlay = document.getElementById("dialogue-overlay");
+            overlay.innerHTML = words.map((word, i) => `<span id="word-${i}">${word}</span>`).join(" ");
 
             currentAudio.onloadedmetadata = () => {
-                let duration = currentAudio.duration;
-                let startTime = Date.now();
+                let timestamps = dialogue.timestamps;
+                if (timestamps.length === 0) {
+                    const duration = currentAudio.duration;
+                    const wordCount = words.length;
+                    const timePerWord = duration / wordCount;
+                    timestamps = words.map((word, i) => ({
+                        word,
+                        start: i * timePerWord,
+                        end: (i + 1) * timePerWord
+                    }));
+                }
 
                 function update() {
-                    if (!isPlaying) return;
-                    let elapsed = (Date.now() - startTime) / 1000;
-                    let progress = (elapsed / duration) * 283;
+                    if (!isPlaying || !currentAudio) return;
+                    const currentTime = currentAudio.currentTime;
+
+                    // Highlight words based on timestamps
+                    timestamps.forEach((ts, i) => {
+                        const span = document.getElementById(`word-${i}`);
+                        if (span) {
+                            if (currentTime >= ts.start && currentTime < ts.end) {
+                                span.style.backgroundColor = "yellow";
+                                span.style.color = "black";
+                            } else {
+                                span.style.backgroundColor = "transparent";
+                                span.style.color = "white";
+                            }
+                        }
+                    });
+
+                    // Update progress circle
+                    const progress = (currentTime / currentAudio.duration) * 283;
                     updateProgress(progress);
 
-                    if (elapsed < duration) {
+                    if (currentTime < currentAudio.duration) {
                         animationFrameId = requestAnimationFrame(update);
                     }
                 }
@@ -294,13 +324,36 @@
 
             currentAudio.onended = () => {
                 setTimeout(() => {
-                    index++;
-                    playNext();
+                    currentDialogueIndex++;
+                    if (currentDialogueIndex < audioQueue.length) {
+                        playAudioQueue(); // Play next dialogue
+                    } else {
+                        resetPlayPauseButton(); // Reset when all dialogues are done
+                    }
                 }, 1000);
             };
-            currentAudio.play();
         }
-        playNext();
+
+        // Play or resume the current audio
+        currentAudio.play();
+        isPlaying = true;
+        document.getElementById("play-pause-icon").innerHTML = `
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
+        `;
+    }
+
+    function pauseAudio() {
+        if (currentAudio) {
+            currentAudio.pause();
+            isPlaying = false;
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            document.getElementById("play-pause-icon").innerHTML = `
+                <path d="M8 5.14v14l11-7-11-7z"></path>
+            `;
+        }
     }
 
     function stopAudio() {
@@ -311,7 +364,10 @@
         }
         if (animationFrameId) {
             cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
         }
+        document.getElementById("dialogue-overlay").innerHTML = "";
+        isPlaying = false;
     }
 
     function updateProgress(value) {
@@ -323,17 +379,10 @@
 
     function togglePlayPause() {
         if (isPlaying) {
-            stopAudio();
-            document.getElementById("play-pause-icon").innerHTML = `
-                <path d="M8 5.14v14l11-7-11-7z"></path>
-            `;
+            pauseAudio();
         } else {
             playAudioQueue();
-            document.getElementById("play-pause-icon").innerHTML = `
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
-            `;
         }
-        isPlaying = !isPlaying;
     }
 
     function nextComic() {
@@ -363,7 +412,7 @@
     function updatePageProgress(index) {
         const pageProgress = document.getElementById("page-progress");
         const currentPage = document.getElementById("current-page");
-        const progressPercentage = (index / (totalPages - 1)) * 100;
+        const progressPercentage = totalPages > 1 ? (index / (totalPages - 1)) * 100 : 0;
         pageProgress.style.width = `${progressPercentage}%`;
         currentPage.textContent = index + 1;
     }
@@ -379,7 +428,10 @@
         }
     });
 
-    window.onload = () => loadComic(currentIndex);
+    window.onload = async () => {
+        await fetchTotalPages();
+        loadComic(currentIndex);
+    };
 </script>
 </body>
 </html>

@@ -1,0 +1,47 @@
+[
+    {
+        "word": " I'm",
+        "start": 0.0,
+        "end": 0.3
+    },
+    {
+        "word": " reading",
+        "start": 0.3,
+        "end": 0.56
+    },
+    {
+        "word": " mama.",
+        "start": 0.56,
+        "end": 0.98
+    },
+    {
+        "word": " Look",
+        "start": 1.4,
+        "end": 1.56
+    },
+    {
+        "word": " how",
+        "start": 1.56,
+        "end": 1.76
+    },
+    {
+        "word": " awesome",
+        "start": 1.76,
+        "end": 2.04
+    },
+    {
+        "word": " this",
+        "start": 2.04,
+        "end": 2.3
+    },
+    {
+        "word": " art",
+        "start": 2.3,
+        "end": 2.5
+    },
+    {
+        "word": " is.",
+        "start": 2.5,
+        "end": 2.8
+    }
+]

@@ -63,5 +63,11 @@ def get_comic(index):
 
     return jsonify({"image": image_path, "dialogues": dialogues})
 
+@app.route("/get_comic_count")
+def get_comic_count():
+    """Return the total number of comics."""
+    comics = load_comics()
+    return jsonify({"count": len(comics)})
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=4000)
